@@ -26,20 +26,46 @@ Versioning: main = beta; tags = stable/rc. See RELEASE.md.
 Summary:        Neovim LSP and Tree-sitter modules (devenv)
 Requires:       %{name} = %{version}-%{release}
 Requires:       neovim
+# Weak deps — install with dnf (honors Recommends by default)
+Recommends:     python3-lsp-server
+Recommends:     python3-lsp-ruff
+Recommends:     python3-lsp-black
+Recommends:     gopls
+Recommends:     nodejs-bash-language-server
+Recommends:     libtree-sitter
+Recommends:     libtree-sitter-python
+Recommends:     libtree-sitter-bash
+Recommends:     libtree-sitter-lua
+Recommends:     libtree-sitter-go
+Recommends:     libtree-sitter-json
+Recommends:     libtree-sitter-yaml
+Recommends:     libtree-sitter-javascript
+Recommends:     libtree-sitter-typescript
+Recommends:     libtree-sitter-c
+Recommends:     libtree-sitter-cpp
+Recommends:     libtree-sitter-rust
+Recommends:     tree-sitter-cli
 
 %description -n devenv-lsp-setup-neovim
 Installs lsp-config, treesitter-config, and plugins-config on the Neovim
-packpath so soft-requires from devenv-ai-assistant resolve.
+packpath so soft-requires from devenv-ai-assistant resolve. Recommends
+Fedora pylsp/gopls/bashls and Tree-sitter grammars (including Python).
 
 %package -n devenv-lsp-setup-vim
 Summary:        Vim ALE/LSP config (devenv)
 Requires:       %{name} = %{version}-%{release}
 Requires:       vim-enhanced
 Recommends:     vim-ale
+Recommends:     python3-lsp-server
+Recommends:     python3-lsp-ruff
+Recommends:     python3-lsp-black
+Recommends:     gopls
+Recommends:     nodejs-bash-language-server
 
 %description -n devenv-lsp-setup-vim
 Installs ALE/LSP keymaps into vimfiles plugin path
 (%{_datadir}/vim/vimfiles/plugin/). Does not overwrite ~/.vimrc.
+Recommends vim-ale and system language servers (including pylsp).
 
 %prep
 %autosetup -n %{name}-%{version}
@@ -80,5 +106,8 @@ install -m 0644 vim-ale-config.vim \
 %{_datadir}/vim/vimfiles/plugin/devenv-lsp-ale.vim
 
 %changelog
+* Fri Nov 13 2026 David Sedgmen <dsedgmen@users.noreply.github.com> - 1.0.0-2
+- Recommends Fedora pylsp/gopls/bashls and Tree-sitter grammars (Python)
+
 * Fri Nov 13 2026 David Sedgmen <dsedgmen@users.noreply.github.com> - 1.0.0-1
 - Initial RPM with separate neovim and vim subpackages
