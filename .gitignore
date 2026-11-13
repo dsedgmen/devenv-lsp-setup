@@ -1,0 +1,7 @@
+*.swp
+*.swo
+*~
+*.backup
+.DS_Store
+.idea/
+.vscode/
