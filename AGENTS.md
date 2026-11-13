@@ -24,9 +24,17 @@ AI keymaps/CLI and packaging are other siblings — do not re-vendor them here.
 3. `install-vim-lsp.sh` must not overwrite `~/.vimrc`.
 4. No secrets in git.
 
+## Packaging
+
+Mirror devenv-ai-helper: `VERSION`, `scripts/rpm-version.sh`, `.copr/Makefile`,
+`.packit.yaml`, `rpm.yml` / `security.yml` / `release.yml`. Spec macros
+`devenv_lsp_ver` / `devenv_lsp_rel`. Separate RPMs:
+`devenv-lsp-setup`, `devenv-lsp-setup-neovim`, `devenv-lsp-setup-vim`.
+
 ## Verify
 
 - `bash -n install.sh install-*.sh`
 - `luac -p` / load under nvim when available
+- `./scripts/rpm-version.sh --shell`
 
 Ask before: releases, force-push, skipping hooks.

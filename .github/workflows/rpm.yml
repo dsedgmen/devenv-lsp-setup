@@ -1,0 +1,65 @@
+name: RPM
+
+on:
+  push:
+    branches: [main, "release/**", "release-*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rpmbuild:
+    name: Build RPM (${{ github.ref_name }})
+    runs-on: ubuntu-24.04
+    container: fedora:latest
+    steps:
+      - name: Install build tools
+        run: dnf install -y git rpm-build rpmdevtools
+
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Resolve version, build, and stage RPMs
+        id: ver
+        env:
+          GITHUB_REF: ${{ github.ref }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          chmod +x ./scripts/rpm-version.sh
+          eval "$(./scripts/rpm-version.sh --shell)"
+          ./scripts/rpm-version.sh
+          {
+            echo "version=${VERSION}"
+            echo "release=${RELEASE}"
+            echo "channel=${CHANNEL}"
+          } >> "$GITHUB_OUTPUT"
+
+          mkdir -p ~/rpmbuild/SOURCES ~/rpmbuild/SPECS dist
+          mkdir -p "/tmp/pack/devenv-lsp-setup-${VERSION}"
+          cp -a lsp-config.lua treesitter-config.lua plugins-config.lua \
+            vim-ale-config.vim README.md LICENSE \
+            "/tmp/pack/devenv-lsp-setup-${VERSION}/"
+          tar -C /tmp/pack -czf ~/rpmbuild/SOURCES/devenv-lsp-setup-${VERSION}.tar.gz \
+            "devenv-lsp-setup-${VERSION}"
+          cp devenv-lsp-setup.spec ~/rpmbuild/SPECS/
+
+          rpmbuild -ba ~/rpmbuild/SPECS/devenv-lsp-setup.spec \
+            --define "devenv_lsp_ver ${VERSION}" \
+            --define "devenv_lsp_rel ${RELEASE}"
+          cp -a ~/rpmbuild/RPMS/*/*.rpm ~/rpmbuild/SRPMS/*.rpm dist/
+          echo "Built ${CHANNEL}: devenv-lsp-setup-${VERSION}-${RELEASE}"
+          ls -la dist/
+          rpm -qpl dist/devenv-lsp-setup-neovim-*.rpm
+          rpm -qpl dist/devenv-lsp-setup-vim-*.rpm
+
+      - name: Upload RPMs
+        uses: actions/upload-artifact@v5
+        with:
+          name: devenv-lsp-setup-${{ steps.ver.outputs.channel }}-${{ steps.ver.outputs.version }}-${{ github.run_number }}
+          path: dist/*

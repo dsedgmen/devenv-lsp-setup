@@ -1,5 +1,11 @@
 # devenv-lsp-setup
 
+[![RPM](https://github.com/dsedgmen/devenv-lsp-setup/actions/workflows/rpm.yml/badge.svg)](https://github.com/dsedgmen/devenv-lsp-setup/actions/workflows/rpm.yml)
+[![Security](https://github.com/dsedgmen/devenv-lsp-setup/actions/workflows/security.yml/badge.svg)](https://github.com/dsedgmen/devenv-lsp-setup/actions/workflows/security.yml)
+[![Release](https://github.com/dsedgmen/devenv-lsp-setup/actions/workflows/release.yml/badge.svg)](https://github.com/dsedgmen/devenv-lsp-setup/actions/workflows/release.yml)
+[![COPR](https://copr.fedorainfracloud.org/coprs/dsedgmen/devenv/package/devenv-lsp-setup/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/dsedgmen/devenv/package/devenv-lsp-setup/)
+[![GitHub release](https://img.shields.io/github/v/release/dsedgmen/devenv-lsp-setup?include_prereleases)](https://github.com/dsedgmen/devenv-lsp-setup/releases)
+
 Fedora-friendly **LSP**, **Tree-sitter**, and productivity plugin configs for
 Vim/Neovim.
 
@@ -11,7 +17,17 @@ Vim/Neovim.
 | [devenv-packager](https://github.com/dsedgmen/devenv-packager) | Stages this repo into images |
 | [devenv](https://github.com/dsedgmen/devenv) | `DEVENV_LSP_SETUP_DIR` discovery |
 
-## Quick start
+## Install (Fedora COPR)
+
+Separate Neovim and Vim RPMs (shared data package pulled in automatically):
+
+```bash
+sudo dnf copr enable dsedgmen/devenv
+sudo dnf install devenv-lsp-setup-neovim   # packpath Lua modules
+sudo dnf install devenv-lsp-setup-vim      # vimfiles ALE config
+```
+
+## Quick start (from git)
 
 ```bash
 git clone https://github.com/dsedgmen/devenv-lsp-setup.git
@@ -41,4 +57,4 @@ cd devenv-lsp-setup
 
 Set `DEVENV_LSP_SETUP_DIR`, or clone as sibling `../devenv-lsp-setup`.
 
-Agent guidance: [AGENTS.md](AGENTS.md).
+Versioning / COPR / tags: [RELEASE.md](RELEASE.md). Agent guidance: [AGENTS.md](AGENTS.md).
